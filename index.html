@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <meta name="theme-color" content="#151515" />
+  <style>
+    /* Quick inline styles for smooth hero animation */
+    .hero-media { position: relative; overflow: hidden; height: 600px; }
+    .hero-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; position: absolute; top: 0; left: 0; }
+    .hero-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.35); }
+  </style>
 </head>
 <body>
   <header class="nav">
@@ -26,10 +32,12 @@
   </header>
 
   <main>
-    <!-- HERO -->
+    <!-- HERO with rotating images -->
     <section class="hero" id="home" aria-label="Hero">
       <div class="hero-media">
-        <img src="uploads/1.png" alt="$ERUPT hero artwork" class="hero-img" />
+        <img src="uploads/hero.png" alt="$ERUPT hero artwork" class="hero-img" id="heroSlide1" style="opacity:1;" />
+        <img src="uploads/hero1.png" alt="$ERUPT hero artwork" class="hero-img" id="heroSlide2" style="opacity:0;" />
+        <img src="uploads/hero3.png" alt="$ERUPT hero artwork" class="hero-img" id="heroSlide3" style="opacity:0;" />
         <div class="hero-overlay"></div>
       </div>
       <div class="hero-content">
@@ -160,20 +168,27 @@ Built by humans, powered by chaos, backed by a team that sees the next million-d
     // Mobile nav toggle
     const toggle = document.querySelector('.nav-toggle');
     const nav = document.querySelector('.nav-links');
-    toggle.addEventListener('click', () => {
-      nav.classList.toggle('open');
-    });
+    toggle.addEventListener('click', () => { nav.classList.toggle('open'); });
+
+    // Hero image slideshow
+    const slides = [
+      document.getElementById("heroSlide1"),
+      document.getElementById("heroSlide2"),
+      document.getElementById("heroSlide3")
+    ];
+    let current = 0;
+    setInterval(() => {
+      slides.forEach((s, i) => s.style.opacity = i === current ? 1 : 0);
+      current = (current + 1) % slides.length;
+    }, 5000);
 
     // Small parallax on hero image for depth
-    const heroImg = document.querySelector('.hero-img');
     window.addEventListener('mousemove', (e) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 10;
       const y = (e.clientY / window.innerHeight - 0.5) * 6;
-      heroImg.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+      slides.forEach(s => s.style.transform = `translate(${x}px, ${y}px) scale(1.03)`);
     });
-    window.addEventListener('mouseleave', () => {
-      heroImg.style.transform = '';
-    });
+    window.addEventListener('mouseleave', () => { slides.forEach(s => s.style.transform = ''); });
   </script>
 </body>
 </html>
